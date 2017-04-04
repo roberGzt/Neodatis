@@ -9,13 +9,15 @@ import org.neodatis.odb.impl.core.query.criteria.CriteriaQuery;
 
 import daos.impl.PersonaDAONeodatis;
 import entidades.Persona;
+import properties.Parametros;
 
 public class MainClass
 {
 
 	public static void main(String[] args)
 	{
-				
+		Parametros.SetearParametros();	
+		
 //		a.- Todas las personas cuyo nombre sea exactamente �Juan�.
 		PersonaDAONeodatis daoP = new PersonaDAONeodatis();
 		for (int i =0; i<10; i++){
@@ -33,7 +35,7 @@ public class MainClass
 		ODB odb = null;
 		try {
 		    // Abrimos la bd
-		    odb = ODBFactory.open("ejercicio2db");
+		    odb = ODBFactory.open(Parametros.getProperties().getProperty("dbPath"));
 		    IQuery query = new CriteriaQuery(Persona.class, Where.equal("nombre", "Juan"));
 		    Objects<Persona> personas = odb.getObjects(query);
 		    personas.forEach(p -> System.out.println(p.getNombre() +" " + p.getApellido()) );
