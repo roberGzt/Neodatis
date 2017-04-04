@@ -59,7 +59,10 @@ Temporary Items
 .mtj.tmp/
 
 # Package Files #
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 *.war
 *.ear
 *.zip
