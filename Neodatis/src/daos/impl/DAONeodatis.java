@@ -8,15 +8,22 @@ import org.neodatis.odb.Objects;
 import daos.DAO;
 import properties.Parametros;
 
-public class DAONeodatis<T> implements DAO<T> {
+public class DAONeodatis<T> implements DAO<T>
+{
+	private ODB odb;
 
-	public void guardar(T t) {
-		ODB odb = null;
-		try {
+	public void guardar(T t)
+	{
+		odb = null;
+		try
+		{
 			odb = ODBFactory.open(Parametros.getProperties().getProperty(Parametros.dbPath));
 			odb.store(t);
-		} finally {
-			if (odb != null) {
+		}
+		finally
+		{
+			if (odb != null)
+			{
 				// Cerramos la bd
 				odb.close();
 			}
@@ -24,27 +31,25 @@ public class DAONeodatis<T> implements DAO<T> {
 
 	}
 
-	public void borrar(T t) {
-		ODB odb = null;
-		try {
+	public void borrar(T t)
+	{
+		odb = null;
+		try
+		{
 			// Abrimos la bd
 			odb = ODBFactory.open(Parametros.getProperties().getProperty(Parametros.dbPath));
 			Objects<T> objects = odb.getObjects(t.getClass());
 
-			for (T obj : objects) {
-				try {
-					if (t.equals((T) obj)) {
-						odb.delete(obj);
-					}
-				} catch (Exception e) {
-
-				}
-			}
-		
+			objects.forEach(o -> {
+				if (t.equals((T) o))
+					odb.delete(o);
+			});
 
 			// Guardamos los cambios
 			odb.commit();
-		} finally {
+		}
+		finally
+		{
 			if (odb != null)
 				odb.close();
 		}

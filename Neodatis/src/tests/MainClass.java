@@ -1,4 +1,4 @@
-package negocios;
+package tests;
 
 import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;

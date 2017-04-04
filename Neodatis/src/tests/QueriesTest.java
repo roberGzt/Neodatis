@@ -1,11 +1,10 @@
-package negocios;
+package tests;
 
 import static org.junit.Assert.*;
 
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
@@ -13,9 +12,6 @@ import org.junit.Test;
 import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;
 import org.neodatis.odb.Objects;
-import org.neodatis.odb.core.query.IQuery;
-import org.neodatis.odb.core.query.criteria.Where;
-import org.neodatis.odb.impl.core.query.criteria.CriteriaQuery;
 
 import daos.PersonaDAO;
 import daos.impl.PersonaDAONeodatis;
@@ -96,7 +92,6 @@ public class QueriesTest {
 		ODB odb = null;
 		Objects<Persona> personas = null;
 		try {
-		    //Abro la db y borro los elementos.
 		    odb = ODBFactory.open(dbFilePath);
 		    personas = odb.getObjects(Persona.class);	    		    
 		} finally {
