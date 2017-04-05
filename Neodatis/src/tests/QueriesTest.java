@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.neodatis.odb.Objects;
 import org.neodatis.odb.core.query.IQuery;
 import org.neodatis.odb.core.query.criteria.Where;
+import org.neodatis.odb.core.query.nq.SimpleNativeQuery;
 import org.neodatis.odb.impl.core.query.criteria.CriteriaQuery;
 
 import daos.impl.PersonaDAONeodatis;
@@ -105,8 +106,40 @@ public class QueriesTest
 	}
 
 	// d.- Todas las personas que vivan en Buenos Aires.
+	@SuppressWarnings("serial")
+	@Test
+	public void testPersonasQueVivenEnBsAs()
+	{
+		IQuery query = new SimpleNativeQuery(){
+			@SuppressWarnings("unused")
+			public boolean match(Persona p){
+				return p.getDomicilio().getProvincia().getNombre().toLowerCase().startsWith("buenos aires");
+			}
+		};
+		Objects<Persona> resultadoQuery = pDAO.consultar(query);
+
+		assertEquals(2, resultadoQuery.size());
+		ArrayList<String> personas = new ArrayList<>();
+		resultadoQuery.forEach(p -> personas.add(p.getApellido()));
+		assertTrue(personas.contains("Alvarez"));
+		assertTrue(personas.contains("Perez"));		
+
+	}
 
 	// e.- La cantidad de personas que no tengan domicilio cargado
+	@Test
+	public void testPersonasSinDomicilio()
+	{
+		IQuery query = new CriteriaQuery(Persona.class, Where.isNull("domicilio"));
+		Objects<Persona> resultadoQuery = pDAO.consultar(query);
+
+		assertEquals(1, resultadoQuery.size());
+		ArrayList<String> personas = new ArrayList<>();
+		resultadoQuery.forEach(p -> personas.add(p.getApellido()));
+		assertTrue(personas.contains("Pizarro"));
+				
+
+	}
 
 	private void agregarDatosDePrueba()
 	{
