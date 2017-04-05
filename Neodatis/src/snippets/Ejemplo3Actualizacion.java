@@ -18,7 +18,7 @@ public class Ejemplo3Actualizacion {
 	    Objects<Cliente> clientes = odb.getObjects(query);
 
 	    // Recuperamos el objeto a modificar
-	    Cliente tito = (Cliente) clientes.getFirst();
+	    Cliente tito = clientes.getFirst();
 
 	    // Cambiamos el cuit
 	    tito.setCuit(48754821);

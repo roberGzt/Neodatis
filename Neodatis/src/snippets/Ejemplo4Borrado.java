@@ -18,7 +18,7 @@ public class Ejemplo4Borrado {
 	    Objects<Cliente> clientes = odb.getObjects(query);
 
 	    // Recuperamos el objeto a borrar
-	    Cliente tito = (Cliente) clientes.getFirst();
+	    Cliente tito = clientes.getFirst();
 
 	    // Actualizamos
 	    odb.delete(tito);

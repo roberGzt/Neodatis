@@ -10,12 +10,14 @@ public class Persona
 	private String apellido;
 	private LocalDate fechaDeNacimiento;
 	private Domicilio domicilio;
+	private int edad; 
 	
 	public Persona(){
 		this.nombre = "nombre";
 		this.apellido = "apellido";
 		this.fechaDeNacimiento = LocalDate.now();
 		this.domicilio = new Domicilio();
+		this.edad = this.calcularEdad();
 	}
 	
 	public Persona(int i){
@@ -23,6 +25,7 @@ public class Persona
 		this.apellido = "apellido"+ i;
 		this.fechaDeNacimiento = LocalDate.now();
 		this.domicilio = new Domicilio(i);
+		this.edad = this.calcularEdad();
 		
 	}
 
@@ -33,6 +36,7 @@ public class Persona
 		this.apellido = apellido;
 		this.fechaDeNacimiento = fechaDeNacimiento;
 		this.domicilio = domicilio;
+		this.edad = this.calcularEdad();
 	}
 
 	public String getNombre()
@@ -75,14 +79,18 @@ public class Persona
 		this.domicilio = domicilio;
 	}
 	
-	public int getEdad(){		
+	public int getEdad(){
+		return edad;
+	}
+	
+	private int calcularEdad(){		
 		return LocalDate.now().getYear() - fechaDeNacimiento.getYear();
 	}
 
 	@Override
 	public String toString() {
 		return nombre + " " + apellido + " " + fechaDeNacimiento.format(DateTimeFormatter.ISO_LOCAL_DATE)
-				+ " " + domicilio + " Edad:" + getEdad();
+				+ " " + domicilio + " Edad:" + calcularEdad();
 	}
 
 	@Override
