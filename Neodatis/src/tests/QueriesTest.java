@@ -150,10 +150,8 @@ public class QueriesTest
 		// d.- Todas las personas que vivan en Buenos Aires.
 		// e.- La cantidad de personas que no tengan domicilio cargado
 
-		ArrayList<Persona> personas = instanciaPersonas();
-
+		ArrayList<Persona> personas = instanciaPersonas();		
 		personas.forEach(p -> pDAO.guardar(p));
-
 	}
 
 	private ArrayList<Persona> instanciaPersonas()
