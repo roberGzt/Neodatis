@@ -45,7 +45,7 @@ public class PersonaDAONeodatis extends DAONeodatis<Persona> implements PersonaD
 	@Override
 	public Collection<Persona> getPersonasQueVivenEnProvincia(String provincia) {
 		@SuppressWarnings("serial")
-		IQuery query = new SimpleNativeQuery() {			
+		IQuery query = new SimpleNativeQuery() {
 
 			@SuppressWarnings("unused")
 			public boolean match(Persona p) {

@@ -129,7 +129,7 @@ public class QueriesTest {
 		LocalDate edadEntre25y30_2 = LocalDate.of(1987, 1, 1);
 		LocalDate edadEntre25y30_3 = LocalDate.of(1990, 1, 1);
 		LocalDate edadMenor25 = LocalDate.of(1997, 1, 1);
-		LocalDate edadMayor30 = LocalDate.of(1997, 1, 1);
+		LocalDate edadMayor30 = LocalDate.of(1986, 1, 1);
 
 		ArrayList<Persona> personas = new ArrayList<>();
 		personas.add(new Persona("Juan", "Alvarez", edadEntre25y30_1, buenosAires));
