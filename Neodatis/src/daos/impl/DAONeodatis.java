@@ -57,7 +57,7 @@ public class DAONeodatis<T> implements DAO<T>
 		}
 	}
 	
-	public  Objects<T> consultar(IQuery query){
+	Objects<T> consultar(IQuery query){
 		ODB odb = null;
 		Objects<T> resultadoQuery = null;
 		try

@@ -5,37 +5,30 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.neodatis.odb.Objects;
-import org.neodatis.odb.core.query.IQuery;
-import org.neodatis.odb.core.query.criteria.Where;
-import org.neodatis.odb.core.query.nq.SimpleNativeQuery;
-import org.neodatis.odb.impl.core.query.criteria.CriteriaQuery;
-
 import daos.impl.PersonaDAONeodatis;
 import entidades.Domicilio;
 import entidades.Persona;
 import entidades.Provincia;
 import properties.Parametros;
 
-public class QueriesTest
-{
+public class QueriesTest {
 	private static String dbFilePath;
 	private static PersonaDAONeodatis pDAO;
 
 	@BeforeClass
-	public static void setUpClass(){
+	public static void setUpClass() {
 		pDAO = new PersonaDAONeodatis();
 		dbFilePath = Parametros.getProperties().getProperty(Parametros.dbPath);
 	}
-	
+
 	@Before
-	public void setUp() throws Exception
-	{
-		
+	public void setUp() throws Exception {
+
 		File f = new File(dbFilePath);
 		if (f.exists())
 			f.delete();
@@ -43,42 +36,33 @@ public class QueriesTest
 	}
 
 	// @After
-	public void tearDown() throws Exception
-	{
+	public void tearDown() throws Exception {
 		File f = new File(dbFilePath);
 		if (f.exists())
 			f.delete();
 	}
 
 	@Test
-	public void testBorrarPersonas()
-	{
-		IQuery query = new CriteriaQuery(Persona.class);
-		Objects<Persona> personas = pDAO.consultar(query);
+	public void testBorrarPersonas() {
+		Collection<Persona> personas = pDAO.getPersonas();
 		assertEquals(instanciaPersonas().size(), personas.size());
 		personas.forEach(p -> pDAO.borrar(p));
-		personas = pDAO.consultar(new CriteriaQuery(Persona.class));
+		personas = pDAO.getPersonas();
 		assertEquals(0, personas.size());
 	}
 
 	// a.- Todas las personas cuyo nombre sea exactamente ‘Juan’.
 	@Test
-	public void testPersonasConNombreJuan()
-	{
-		IQuery query = new CriteriaQuery(Persona.class, Where.equal("nombre", "Juan"));
-		Objects<Persona> personas = pDAO.consultar(query);
-		
+	public void testPersonasConNombreJuan() {
+		Collection<Persona> personas = pDAO.getPersonasConNombre("Juan");
 		assertEquals(2, personas.size());
 	}
 
 	// b.- Todas las personas cuyo nombre comience con ‘J’, ordenados por
 	// apellido y luego por nombre.
 	@Test
-	public void testPersonasConNombreEmpezadoEnJ()
-	{
-		IQuery query = new CriteriaQuery(Persona.class, Where.like("nombre", "J%")).orderByAsc("apellido,nombre");
-		Objects<Persona> resultadoQuery = pDAO.consultar(query);
-
+	public void testPersonasConNombreEmpezadoEnJ() {
+		Collection<Persona> resultadoQuery = pDAO.getPersonasConNombreEmpezadoEn('j');
 		assertEquals(4, resultadoQuery.size());
 		ArrayList<String> personas = new ArrayList<>();
 		resultadoQuery.forEach(p -> personas.add(p.getApellido()));
@@ -86,63 +70,42 @@ public class QueriesTest
 		assertEquals("Belladona", personas.get(1));
 		assertEquals("Cortez", personas.get(2));
 		assertEquals("Perez", personas.get(3));
-
 	}
 
 	// c.- Todas las personas que tengan entre 25 y 30 años.
 	@Test
-	public void testPersonasConEdadEntre25y30()
-	{
-		IQuery query = new CriteriaQuery(Persona.class, Where.and().add(Where.ge("edad", 25)).add(Where.le("edad", 30)));
-		Objects<Persona> resultadoQuery = pDAO.consultar(query);
-
+	public void testPersonasConEdadEntre25y30() {
+		Collection<Persona> resultadoQuery = pDAO.getPersonasConEdadEntre(25, 30);
 		assertEquals(3, resultadoQuery.size());
 		ArrayList<String> personas = new ArrayList<>();
 		resultadoQuery.forEach(p -> personas.add(p.getApellido()));
 		assertTrue(personas.contains("Alvarez"));
 		assertTrue(personas.contains("Perez"));
 		assertTrue(personas.contains("Belladona"));
-
 	}
 
 	// d.- Todas las personas que vivan en Buenos Aires.
-	@SuppressWarnings("serial")
 	@Test
-	public void testPersonasQueVivenEnBsAs()
-	{
-		IQuery query = new SimpleNativeQuery(){
-			@SuppressWarnings("unused")
-			public boolean match(Persona p){
-				return p.getDomicilio().getProvincia().getNombre().toLowerCase().startsWith("buenos aires");
-			}
-		};
-		Objects<Persona> resultadoQuery = pDAO.consultar(query);
-
+	public void testPersonasQueVivenEnBsAs() {
+		Collection<Persona> resultadoQuery = pDAO.getPersonasQueVivenEnProvincia("Buenos Aires");
 		assertEquals(2, resultadoQuery.size());
 		ArrayList<String> personas = new ArrayList<>();
 		resultadoQuery.forEach(p -> personas.add(p.getApellido()));
 		assertTrue(personas.contains("Alvarez"));
-		assertTrue(personas.contains("Perez"));		
-
+		assertTrue(personas.contains("Perez"));
 	}
 
 	// e.- La cantidad de personas que no tengan domicilio cargado
 	@Test
-	public void testPersonasSinDomicilio()
-	{
-		IQuery query = new CriteriaQuery(Persona.class, Where.isNull("domicilio"));
-		Objects<Persona> resultadoQuery = pDAO.consultar(query);
-
+	public void testPersonasSinDomicilio() {
+		Collection<Persona> resultadoQuery = pDAO.getPersonasSinDomicilio();
 		assertEquals(1, resultadoQuery.size());
 		ArrayList<String> personas = new ArrayList<>();
 		resultadoQuery.forEach(p -> personas.add(p.getApellido()));
 		assertTrue(personas.contains("Pizarro"));
-				
-
 	}
 
-	private void agregarDatosDePrueba()
-	{
+	private void agregarDatosDePrueba() {
 		// a.- Todas las personas cuyo nombre sea exactamente ‘Juan’.
 		// b.- Todas las personas cuyo nombre comience con ‘J’, ordenados por
 		// apellido y luego por nombre.
@@ -150,16 +113,16 @@ public class QueriesTest
 		// d.- Todas las personas que vivan en Buenos Aires.
 		// e.- La cantidad de personas que no tengan domicilio cargado
 
-		ArrayList<Persona> personas = instanciaPersonas();		
-		personas.forEach(p -> pDAO.guardar(p));
+		ArrayList<Persona> personas = instanciaPersonas();
+		personas.forEach(p -> pDAO.guardar(p));		
 	}
 
-	private ArrayList<Persona> instanciaPersonas()
-	{
+	private ArrayList<Persona> instanciaPersonas() {
 		Provincia provBuenosAires = new Provincia("Buenos Aires");
 		Provincia provSalta = new Provincia("Salta");
 		Provincia provJujuy = new Provincia("Jujuy");
-		Domicilio buenosAires = new Domicilio("Siempreviva", 123, "", "1232", "Una Localidad de bs as", provBuenosAires);
+		Domicilio buenosAires = new Domicilio("Siempreviva", 123, "", "1232", "Una Localidad de bs as",
+				provBuenosAires);
 		Domicilio salta = new Domicilio("Saltando", 123, "", "1342", "Una Localidad salta", provSalta);
 		Domicilio jujuy = new Domicilio("Jujüe", 123, "", "1342", "Una Localidad jujuy", provJujuy);
 		LocalDate edadEntre25y30_1 = LocalDate.of(1992, 1, 1);
